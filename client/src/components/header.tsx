@@ -7,9 +7,10 @@ import { Link, useLocation } from "wouter";
 
 interface HeaderProps {
   hideClockOnHomepage?: boolean;
+  onReportCounterClick?: () => void;
 }
 
-export function Header({ hideClockOnHomepage = false }: HeaderProps) {
+export function Header({ hideClockOnHomepage = false, onReportCounterClick }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
   const [showTooltip, setShowTooltip] = useState(false);
@@ -195,45 +196,6 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
               </div>
             </div>
             
-            {/* Monthly Report Countdown - Only on Dashboard */}
-            {isDashboard && (
-              <div className="border-t border-border/50">
-                <div className="flex justify-end pr-4 py-2">
-                  <div 
-                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 ${
-                      isLastDay 
-                        ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 opacity-100 animate-pulse' 
-                        : 'bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 opacity-60 hover:opacity-80'
-                    }`}
-                    data-testid="monthly-report-counter"
-                  >
-                    <div className="relative">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                        isLastDay 
-                          ? 'bg-green-500/30 border border-green-400/50' 
-                          : 'bg-purple-500/20 border border-purple-400/30'
-                      }`}>
-                        <span className="text-xs font-bold">{isLastDay ? '🎉' : daysRemaining}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className={`text-xs font-medium ${
-                        isLastDay 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-purple-600 dark:text-purple-400'
-                      }`}>
-                        {isLastDay ? 'Raporları görmek için tıklayınız' : '30 Günlük Rapora'}
-                      </span>
-                      {!isLastDay && (
-                        <span className="text-xs text-muted-foreground">
-                          {daysRemaining} gün kaldı
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
         </div>
       )}
       

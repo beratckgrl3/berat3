@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/header";
-import { TrendingUp, BarChart3, Target, Brain, BookOpen, Plus, CalendarDays, X, FlaskConical, Trash2, AlertTriangle, Sparkles, Award, Clock, Zap, Edit, Search, Tag, BookX, Lightbulb, Eye } from "lucide-react";
+import { TrendingUp, BarChart3, Target, Brain, BookOpen, Plus, CalendarDays, X, FlaskConical, Trash2, AlertTriangle, Sparkles, Award, Clock, Zap, Edit, Search, Tag, BookX, Lightbulb, Eye, Calendar } from "lucide-react";
 import { Task, Goal, QuestionLog, InsertQuestionLog, ExamResult, InsertExamResult } from "@shared/schema";
 import { DashboardSummaryCards } from "@/components/dashboard-summary-cards";
 import { AdvancedCharts } from "@/components/advanced-charts";
@@ -564,7 +564,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
-      <Header />
+      <Header onReportCounterClick={() => setShowReportModal(true)} />
       
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -580,6 +580,131 @@ export default function Dashboard() {
 
         {/* Summary Cards */}
         <DashboardSummaryCards />
+        
+        {/* Monthly Report Section - Under Performance Summary */}
+        <div className="mb-8">
+          <Card className="bg-gradient-to-br from-purple-50/50 via-card to-indigo-50/50 dark:from-purple-950/30 dark:via-card dark:to-indigo-950/30 backdrop-blur-sm border-2 border-purple-200/30 dark:border-purple-800/30 shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  {/* Report Counter */}
+                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                    (() => {
+                      const now = new Date();
+                      const currentYear = now.getFullYear();
+                      const currentMonth = now.getMonth();
+                      const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                      const currentDay = now.getDate();
+                      const isLastDay = currentDay === lastDayOfMonth;
+                      
+                      return isLastDay 
+                        ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 opacity-100 animate-pulse' 
+                        : 'bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 opacity-70';
+                    })()
+                  }`}>
+                    <div className="relative">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        (() => {
+                          const now = new Date();
+                          const currentYear = now.getFullYear();
+                          const currentMonth = now.getMonth();
+                          const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                          const currentDay = now.getDate();
+                          const isLastDay = currentDay === lastDayOfMonth;
+                          
+                          return isLastDay 
+                            ? 'bg-green-500/30 border border-green-400/50' 
+                            : 'bg-purple-500/20 border border-purple-400/30';
+                        })()
+                      }`}>
+                        <span className="text-sm font-bold">
+                          {(() => {
+                            const now = new Date();
+                            const currentYear = now.getFullYear();
+                            const currentMonth = now.getMonth();
+                            const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                            const currentDay = now.getDate();
+                            const daysRemaining = lastDayOfMonth - currentDay;
+                            const isLastDay = currentDay === lastDayOfMonth;
+                            
+                            return isLastDay ? '🎉' : daysRemaining;
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className={`text-sm font-medium ${
+                        (() => {
+                          const now = new Date();
+                          const currentYear = now.getFullYear();
+                          const currentMonth = now.getMonth();
+                          const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                          const currentDay = now.getDate();
+                          const isLastDay = currentDay === lastDayOfMonth;
+                          
+                          return isLastDay 
+                            ? 'text-green-600 dark:text-green-400' 
+                            : 'text-purple-600 dark:text-purple-400';
+                        })()
+                      }`}>
+                        {(() => {
+                          const now = new Date();
+                          const currentYear = now.getFullYear();
+                          const currentMonth = now.getMonth();
+                          const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                          const currentDay = now.getDate();
+                          const daysRemaining = lastDayOfMonth - currentDay;
+                          const isLastDay = currentDay === lastDayOfMonth;
+                          
+                          return isLastDay ? 'Aylık Rapor Hazır!' : 'Aylık Rapora';
+                        })()}
+                      </span>
+                      {(() => {
+                        const now = new Date();
+                        const currentYear = now.getFullYear();
+                        const currentMonth = now.getMonth();
+                        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                        const currentDay = now.getDate();
+                        const daysRemaining = lastDayOfMonth - currentDay;
+                        const isLastDay = currentDay === lastDayOfMonth;
+                        
+                        return !isLastDay && (
+                          <span className="text-xs text-muted-foreground">
+                            {daysRemaining} gün kaldı
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Report Actions */}
+                <div className="flex items-center space-x-3">
+                  {/* Scheduled Report Button */}
+                  <Button
+                    onClick={() => setShowReportModal(true)}
+                    variant="outline"
+                    className="flex items-center space-x-2 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 border-purple-200 dark:border-purple-800 hover:from-purple-100 hover:to-indigo-100"
+                    data-testid="button-scheduled-report"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    <span>📧 Raporu Gönder</span>
+                  </Button>
+                  
+                  {/* Instant Report Button */}
+                  <Button
+                    onClick={() => setShowReportModal(true)}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                    data-testid="button-instant-report"
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    <span>📄 Hemen Rapor Al</span>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
         {/* Enhanced Study Heatmap - GitHub Style */}
         <div className="mb-8">
@@ -2574,6 +2699,81 @@ export default function Dashboard() {
                 İptal
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Monthly Report Modal */}
+      <Dialog open={showReportModal} onOpenChange={setShowReportModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              📊 Aylık Rapor Talep Et
+            </DialogTitle>
+            <DialogDescription className="text-center text-muted-foreground">
+              Bu ayın çalışma raporunuz hem email hem de SMS olarak gönderilecektir
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                📧 Email Adresi
+              </label>
+              <Input
+                type="email"
+                placeholder="ornek@email.com"
+                value={reportContactInfo.email}
+                onChange={(e) => setReportContactInfo(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full"
+                data-testid="input-email-report"
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                📱 Telefon Numarası
+              </label>
+              <Input
+                type="tel"
+                placeholder="+90 5XX XXX XX XX"
+                value={reportContactInfo.phone}
+                onChange={(e) => setReportContactInfo(prev => ({ ...prev, phone: e.target.value }))}
+                className="w-full"
+                data-testid="input-phone-report"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3 mt-6">
+            <Button
+              onClick={() => {
+                // TODO: Generate and send monthly report
+                toast({ 
+                  title: "📬 Rapor Gönderiliyor", 
+                  description: `Aylık rapor ${reportContactInfo.email} ve ${reportContactInfo.phone} adreslerine gönderiliyor...` 
+                });
+                setShowReportModal(false);
+                setReportContactInfo({ email: "", phone: "" });
+              }}
+              disabled={!reportContactInfo.email || !reportContactInfo.phone}
+              className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              data-testid="button-send-report"
+            >
+              📄 Rapor Gönder
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowReportModal(false);
+                setReportContactInfo({ email: "", phone: "" });
+              }}
+              className="px-6"
+              data-testid="button-cancel-report"
+            >
+              İptal
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
