@@ -133,17 +133,23 @@ function AdvancedChartsComponent() {
     return Array.from(topicMap.values()).sort((a, b) => b.frequency - a.frequency);
   }, [questionLogs, examResults]);
 
-  // Process Net Analysis Data
+  // Process Net Analysis Data - Fixed to show null for non-applicable exam types
   const netAnalysisData = useMemo(() => {
-    return examResults.map(exam => ({
-      date: new Date(exam.exam_date).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' }),
-      examName: exam.exam_name,
-      tytNet: parseFloat(exam.tyt_net) || 0,
-      aytNet: parseFloat(exam.ayt_net) || 0,
-      tytTarget: 90,
-      aytTarget: 50,
-      sortDate: exam.exam_date
-    })).sort((a, b) => new Date(a.sortDate).getTime() - new Date(b.sortDate).getTime());
+    return examResults.map(exam => {
+      // Determine if exam is TYT or AYT based on exam_type or net values
+      const examType = exam.exam_type || (parseFloat(exam.ayt_net) > 0 ? 'AYT' : 'TYT');
+      
+      return {
+        date: new Date(exam.exam_date).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' }),
+        examName: exam.exam_name,
+        // Use null for non-applicable exam type to break the line instead of showing zero
+        tytNet: examType === 'TYT' ? (parseFloat(exam.tyt_net) || 0) : null,
+        aytNet: examType === 'AYT' ? (parseFloat(exam.ayt_net) || 0) : null,
+        tytTarget: 90,
+        aytTarget: 50,
+        sortDate: exam.exam_date
+      };
+    }).sort((a, b) => new Date(a.sortDate).getTime() - new Date(b.sortDate).getTime());
   }, [examResults]);
 
   // Process Subject Analysis Data - Separate for TYT and AYT
@@ -710,13 +716,25 @@ function AdvancedChartsComponent() {
                   <div className="bg-blue-50/80 dark:bg-blue-950/30 rounded-xl p-4 text-center border border-blue-200/50 dark:border-blue-800/40">
                     <div className="text-lg font-bold text-blue-700 dark:text-blue-300 mb-1">TYT Hedef: 90</div>
                     <div className="text-sm text-blue-600 dark:text-blue-400">
-                      TYT DENEME: {netAnalysisData.length > 0 ? netAnalysisData[netAnalysisData.length - 1].tytNet : 0} net
+                      TYT DENEME: {(() => {
+                        // Find the most recent TYT exam (where tytNet > 0 or exam_type is TYT)
+                        const tytExams = examResults.filter(exam => 
+                          exam.exam_type === 'TYT' || (parseFloat(exam.tyt_net) > 0 && parseFloat(exam.ayt_net) === 0)
+                        ).sort((a, b) => new Date(b.exam_date).getTime() - new Date(a.exam_date).getTime());
+                        return tytExams.length > 0 ? parseFloat(tytExams[0].tyt_net) : 0;
+                      })()} net
                     </div>
                   </div>
                   <div className="bg-green-50/80 dark:bg-green-950/30 rounded-xl p-4 text-center border border-green-200/50 dark:border-green-800/40">
                     <div className="text-lg font-bold text-green-700 dark:text-green-300 mb-1">AYT Hedef: 50</div>
                     <div className="text-sm text-green-600 dark:text-green-400">
-                      AYT DENEME: {netAnalysisData.length > 0 ? netAnalysisData[netAnalysisData.length - 1].aytNet : 0} net
+                      AYT DENEME: {(() => {
+                        // Find the most recent AYT exam (where aytNet > 0 or exam_type is AYT)
+                        const aytExams = examResults.filter(exam => 
+                          exam.exam_type === 'AYT' || (parseFloat(exam.ayt_net) > 0 && parseFloat(exam.tyt_net) === 0)
+                        ).sort((a, b) => new Date(b.exam_date).getTime() - new Date(a.exam_date).getTime());
+                        return aytExams.length > 0 ? parseFloat(aytExams[0].ayt_net) : 0;
+                      })()} net
                     </div>
                   </div>
                 </div>
@@ -768,6 +786,9 @@ function AdvancedChartsComponent() {
                         return data ? `📊 ${data.examName} - ${label}` : label;
                       }}
                       formatter={(value: any, name: any) => {
+                        // Skip null values from tooltip display
+                        if (value === null) return [null, null];
+                        
                         if (name === 'tytTarget') return [`${value} net`, '🔵 TYT Hedef: 90 net'];
                         if (name === 'aytTarget') return [`${value} net`, '🔵 AYT Hedef: 50 net'];
                         if (name === 'tytNet') return [`${value} net`, '🟢 TYT DENEME'];

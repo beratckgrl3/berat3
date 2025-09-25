@@ -1105,6 +1105,77 @@ export default function Dashboard() {
                           </div>
                         </div>
                         
+                        {/* Subject Details Section */}
+                        {exam.subjects_data && (() => {
+                          try {
+                            const subjectsData = JSON.parse(exam.subjects_data);
+                            const subjects = Object.entries(subjectsData).map(([key, data]: [string, any]) => {
+                              const subjectNames: {[key: string]: string} = {
+                                'turkce': 'Türkçe',
+                                'matematik': 'Matematik',
+                                'sosyal': 'Sosyal',
+                                'fen': 'Fen',
+                                'fizik': 'Fizik',
+                                'kimya': 'Kimya',
+                                'biyoloji': 'Biyoloji'
+                              };
+                              return {
+                                name: subjectNames[key] || key,
+                                correct: parseInt(data.correct) || 0,
+                                wrong: parseInt(data.wrong) || 0,
+                                blank: parseInt(data.blank) || 0,
+                                total: (parseInt(data.correct) || 0) + (parseInt(data.wrong) || 0) + (parseInt(data.blank) || 0)
+                              };
+                            }).filter(subject => subject.total > 0);
+                            
+                            if (subjects.length > 0) {
+                              return (
+                                <div className="mt-6 pt-4 border-t border-emerald-200/50 dark:border-emerald-700/30">
+                                  <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-300 mb-3 flex items-center gap-2">
+                                    📊 Ders Detayları
+                                  </h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {subjects.map((subject, idx) => (
+                                      <div key={idx} className="bg-gradient-to-r from-white/60 to-emerald-50/40 dark:from-gray-800/60 dark:to-emerald-900/20 rounded-xl p-3 border border-emerald-200/40 dark:border-emerald-700/30">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
+                                            {subject.name}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground font-medium">
+                                            {subject.total} soru
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-xs">
+                                          <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1">
+                                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                              <span className="text-green-600 dark:text-green-400 font-semibold">{subject.correct}D</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                              <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                              <span className="text-red-600 dark:text-red-400 font-semibold">{subject.wrong}Y</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                              <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                              <span className="text-gray-600 dark:text-gray-400 font-semibold">{subject.blank}B</span>
+                                            </div>
+                                          </div>
+                                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                                            {(subject.correct - subject.wrong * 0.25).toFixed(1)} net
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            }
+                          } catch (e) {
+                            console.error('Error parsing subjects_data:', e);
+                          }
+                          return null;
+                        })()}
+                        
                         {/* Performance Indicators */}
                         <div className="flex items-center justify-between pt-4 border-t border-emerald-200/50 dark:border-emerald-700/30">
                           <div className="flex items-center gap-4">

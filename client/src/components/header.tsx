@@ -82,31 +82,31 @@ export function Header({}: HeaderProps) {
           <div className="flex items-center space-x-4 relative">
             {/* Enhanced Clock Icon with Glassmorphism */}
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-indigo-500/30 rounded-2xl blur-lg animate-pulse"></div>
-              <div className="relative w-12 h-12 bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 rounded-2xl flex items-center justify-center shadow-2xl">
-                <Clock className="h-6 w-6 text-primary drop-shadow-lg" />
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 via-violet-600/30 to-black/40 rounded-2xl blur-lg animate-pulse"></div>
+              <div className="relative w-12 h-12 bg-black/10 dark:bg-purple-950/20 backdrop-blur-xl border border-purple-500/20 dark:border-purple-400/20 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400 drop-shadow-lg" />
               </div>
             </div>
             
             {/* Enhanced Time and Date Container */}
             <div className="flex flex-col relative">
-              {/* Modern Time Display with Gradient */}
-              <div className="text-4xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent font-mono tracking-tighter drop-shadow-lg" data-testid="text-time">
+              {/* Modern Time Display with Purple-Black Gradient */}
+              <div className="text-4xl font-black bg-gradient-to-r from-purple-600 via-violet-700 to-black dark:from-purple-400 dark:via-violet-500 dark:to-gray-300 bg-clip-text text-transparent font-mono tracking-tighter drop-shadow-lg" data-testid="text-time">
                 {formatDateTime().timeStr}
               </div>
               
-              {/* Stylized Date and Location */}
+              {/* Stylized Date and Location with Purple-Black Theme */}
               <div className="flex items-center space-x-2 text-sm font-semibold mt-1">
                 <div className="flex items-center space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg animate-pulse"></div>
-                  <span className="bg-gradient-to-r from-slate-700 to-gray-600 dark:from-slate-300 dark:to-gray-300 bg-clip-text text-transparent font-bold" data-testid="text-date">
+                  <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 shadow-lg animate-pulse"></div>
+                  <span className="bg-gradient-to-r from-purple-800 to-black dark:from-purple-300 dark:to-gray-200 bg-clip-text text-transparent font-bold" data-testid="text-date">
                     {formatDateTime().dateStr}
                   </span>
                 </div>
                 <span className="text-muted-foreground/50">•</span>
                 <div className="flex items-center space-x-1 text-muted-foreground">
                   <span className="text-xs">📍</span>
-                  <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  <span className="font-bold bg-gradient-to-r from-purple-600 to-violet-700 dark:from-purple-400 dark:to-violet-500 bg-clip-text text-transparent">
                     Sakarya, Serdivan
                   </span>
                 </div>
