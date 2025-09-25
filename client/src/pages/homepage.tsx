@@ -1,12 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Header } from "@/components/header";
 import { EnhancedWeatherWidget } from "@/components/enhanced-weather-widget";
 import { CountdownWidget } from "@/components/countdown-widget";
 import { TodaysTasksWidget } from "@/components/todays-tasks-widget";
-import { Calendar, TrendingUp } from "lucide-react";
+import { Calendar, TrendingUp, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Task } from "@shared/schema";
+
+// Centered Welcome Section Component with Clock
+function CenteredWelcomeSection() {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format date and time for Sakarya Serdivan (Turkey timezone)
+  const formatDateTime = () => {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Europe/Istanbul',
+      weekday: 'long',
+      day: 'numeric', 
+      month: 'long',
+      year: 'numeric'
+    };
+    
+    const timeOptions: Intl.DateTimeFormatOptions = {
+      timeZone: 'Europe/Istanbul',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    };
+
+    const dateStr = currentTime.toLocaleDateString('tr-TR', options);
+    const timeStr = currentTime.toLocaleTimeString('tr-TR', timeOptions);
+    
+    return { dateStr, timeStr };
+  };
+
+  const { dateStr, timeStr } = formatDateTime();
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome Message */}
+      <div className="space-y-2">
+        <h1 className="text-5xl font-black bg-gradient-to-r from-purple-600 via-violet-700 to-black dark:from-purple-400 dark:via-violet-500 dark:to-gray-300 bg-clip-text text-transparent">
+          Hoşgeldiniz Berat Çakıroğlu
+        </h1>
+      </div>
+      
+      {/* Centered Clock and Date Display */}
+      <div className="flex flex-col items-center space-y-6">
+        {/* Enhanced Clock Icon with Glassmorphism */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 via-violet-600/30 to-black/40 rounded-3xl blur-2xl animate-pulse"></div>
+          <div className="relative w-20 h-20 bg-black/10 dark:bg-purple-950/20 backdrop-blur-xl border border-purple-500/20 dark:border-purple-400/20 rounded-3xl flex items-center justify-center shadow-2xl">
+            <Clock className="h-10 w-10 text-purple-600 dark:text-purple-400 drop-shadow-lg" />
+          </div>
+        </div>
+        
+        {/* Enhanced Time Display with Purple-Black Gradient */}
+        <div className="text-8xl font-black bg-gradient-to-r from-purple-600 via-violet-700 to-black dark:from-purple-400 dark:via-violet-500 dark:to-gray-300 bg-clip-text text-transparent font-mono tracking-tighter drop-shadow-lg" data-testid="text-time-center">
+          {timeStr}
+        </div>
+        
+        {/* Stylized Date and Location with Purple-Black Theme */}
+        <div className="flex items-center space-x-4 text-2xl font-semibold">
+          <div className="flex items-center space-x-3">
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 shadow-lg animate-pulse"></div>
+            <span className="bg-gradient-to-r from-purple-800 to-black dark:from-purple-300 dark:to-gray-200 bg-clip-text text-transparent font-bold" data-testid="text-date-center">
+              {dateStr}
+            </span>
+          </div>
+          <span className="text-muted-foreground/50">•</span>
+          <div className="flex items-center space-x-2 text-muted-foreground">
+            <span className="text-lg">📍</span>
+            <span className="font-bold bg-gradient-to-r from-purple-600 to-violet-700 dark:from-purple-400 dark:to-violet-500 bg-clip-text text-transparent">
+              Sakarya, Serdivan
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Homepage() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -125,11 +209,12 @@ export default function Homepage() {
         </div>
       </nav>
 
+      {/* Centered Welcome Section with Clock */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <CenteredWelcomeSection />
+      </div>
+      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        {/* Dashboard Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground mb-2 text-center">Hoşgeldiniz Berat</h1>
-        </div>
 
         {/* Top Row - Calendar and Today's Tasks Side-by-Side */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6 items-stretch">
