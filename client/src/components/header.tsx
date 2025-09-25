@@ -1,4 +1,4 @@
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Clock } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { useState, useEffect } from "react";
 import { EmojiPicker } from "./emoji-picker";
@@ -14,6 +14,7 @@ export function Header({}: HeaderProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('😊');
   const [note, setNote] = useState('');
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   // Load from localStorage
   useEffect(() => {
@@ -32,6 +33,39 @@ export function Header({}: HeaderProps) {
     localStorage.setItem('userNote', note);
   }, [note]);
 
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format date and time for Sakarya Serdivan (Turkey timezone)
+  const formatDateTime = () => {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Europe/Istanbul',
+      weekday: 'long',
+      day: 'numeric', 
+      month: 'long',
+      year: 'numeric'
+    };
+    
+    const timeOptions: Intl.DateTimeFormatOptions = {
+      timeZone: 'Europe/Istanbul',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    };
+
+    const dateStr = currentTime.toLocaleDateString('tr-TR', options);
+    const timeStr = currentTime.toLocaleTimeString('tr-TR', timeOptions);
+    
+    return { dateStr, timeStr };
+  };
+
   return (
     <header className="bg-card border-b border-border shadow-sm transition-colors duration-300">
       {/* Motivational Quote Section */}
@@ -44,12 +78,19 @@ export function Header({}: HeaderProps) {
       {/* Main Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">B</span>
+          {/* Time and Date Display */}
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+              <Clock className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-semibold text-foreground">Berat'ın Yapılacakları</h1>
+            <div className="flex flex-col">
+              <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
+                {formatDateTime().timeStr}
+              </div>
+              <div className="text-sm text-muted-foreground font-medium">
+                {formatDateTime().dateStr} - Sakarya, Serdivan
+              </div>
+            </div>
           </div>
 
           {/* Right Section */}
