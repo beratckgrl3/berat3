@@ -76,10 +76,9 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
       {/* Clock/Date/Location Section - Hidden on homepage */}
       {shouldShowClock && (
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2">
-            <div className="flex justify-between items-center">
-              {/* Compact Clock and Date Display - Far Left */}
-              <div className="flex items-start space-x-2">
+          <div className="flex justify-between items-center py-2">
+            {/* Compact Clock and Date Display - Completely Left-Aligned */}
+            <div className="flex items-start space-x-2 pl-2">
                 {/* Clock Icon - Smaller */}
                 <div className="relative">
                   <div className="relative w-6 h-6 bg-black/10 dark:bg-purple-950/20 backdrop-blur-xl border border-purple-500/20 dark:border-purple-400/20 rounded-lg flex items-center justify-center shadow-md">
@@ -119,7 +118,7 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
               </div>
               
               {/* Far Right - Theme and Profile */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 pr-4">
                 {/* Theme Toggle */}
                 <button 
                   onClick={toggleTheme}
@@ -179,7 +178,6 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       )}
       
