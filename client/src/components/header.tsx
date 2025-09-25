@@ -69,7 +69,23 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
   };
 
   const isHomepage = location === '/';
+  const isDashboard = location === '/dashboard';
   const shouldShowClock = !isHomepage || !hideClockOnHomepage;
+
+  // Monthly report countdown calculation
+  const getMonthlyReportCountdown = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const currentDay = now.getDate();
+    const daysRemaining = lastDayOfMonth - currentDay;
+    const isLastDay = currentDay === lastDayOfMonth;
+    
+    return { daysRemaining, isLastDay };
+  };
+
+  const { daysRemaining, isLastDay } = getMonthlyReportCountdown();
 
   return (
     <header className="bg-card border-b border-border shadow-sm transition-colors duration-300">
@@ -178,13 +194,53 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
                 </div>
               </div>
             </div>
+            
+            {/* Monthly Report Countdown - Only on Dashboard */}
+            {isDashboard && (
+              <div className="border-t border-border/50">
+                <div className="flex justify-end pr-4 py-2">
+                  <div 
+                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 ${
+                      isLastDay 
+                        ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 opacity-100 animate-pulse' 
+                        : 'bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 opacity-60 hover:opacity-80'
+                    }`}
+                    data-testid="monthly-report-counter"
+                  >
+                    <div className="relative">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        isLastDay 
+                          ? 'bg-green-500/30 border border-green-400/50' 
+                          : 'bg-purple-500/20 border border-purple-400/30'
+                      }`}>
+                        <span className="text-xs font-bold">{isLastDay ? '🎉' : daysRemaining}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className={`text-xs font-medium ${
+                        isLastDay 
+                          ? 'text-green-600 dark:text-green-400' 
+                          : 'text-purple-600 dark:text-purple-400'
+                      }`}>
+                        {isLastDay ? 'Raporları görmek için tıklayınız' : '30 Günlük Rapora'}
+                      </span>
+                      {!isLastDay && (
+                        <span className="text-xs text-muted-foreground">
+                          {daysRemaining} gün kaldı
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
       )}
       
       {/* Motivational Quote for Homepage - When clock is hidden */}
       {!shouldShowClock && (
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-2 py-3">
             <div className="flex justify-between items-center">
               {/* Empty left space */}
               <div></div>
@@ -194,8 +250,8 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
                 <MotivationalQuote />
               </div>
               
-              {/* Right Side - Theme, Welcome - Compact and right-aligned */}
-              <div className="flex items-center space-x-3 ml-auto">
+              {/* Right Side - Theme, Welcome - TAMAMEN sağa yapıştır */}
+              <div className="flex items-center space-x-2">
                 {/* Theme Toggle */}
                 <button 
                   onClick={toggleTheme}
@@ -211,7 +267,7 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
                 </button>
 
                 {/* Profile Section */}
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <span className="text-sm text-muted-foreground hidden sm:block">Hoşgeldiniz</span>
                   <span className="font-medium text-foreground hidden sm:block">Berat Çakıroğlu</span>
                   <div className="relative">

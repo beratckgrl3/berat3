@@ -99,6 +99,13 @@ export default function Dashboard() {
     };
   } | null>(null);
 
+  // Monthly Report Modal State
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportContactInfo, setReportContactInfo] = useState({
+    email: "",
+    phone: ""
+  });
+
   // Delete all mutations
   const deleteAllQuestionLogsMutation = useMutation({
     mutationFn: () => apiRequest("DELETE", "/api/question-logs/all"),
