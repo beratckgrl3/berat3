@@ -278,6 +278,7 @@ export default function Activities() {
       toast({
         title: "Rapor Gönderildi!",
         description: `${selectedReportType.charAt(0).toUpperCase() + selectedReportType.slice(1)} rapor başarıyla ${contactInfo} adresine gönderildi.`,
+        duration: 3000, // 3 saniye sonra kendini imha eder
       });
       
       // Hide the corresponding report button
