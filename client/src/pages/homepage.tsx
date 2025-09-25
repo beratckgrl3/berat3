@@ -122,18 +122,6 @@ export default function Homepage() {
               Sayaç
             </button>
           </Link>
-          <Link href="/periodic-table">
-            <button 
-              className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
-                location === '/periodic-table' 
-                  ? 'bg-primary text-primary-foreground shadow-lg' 
-                  : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
-              }`}
-              data-testid="link-periodic-table"
-            >
-              Periyodik Cetvel
-            </button>
-          </Link>
         </div>
       </nav>
 
