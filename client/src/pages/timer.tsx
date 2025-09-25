@@ -1,5 +1,4 @@
 import { useState, useEffect, useReducer, useRef } from "react";
-import { Link, useLocation } from "wouter";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,7 +89,6 @@ const formatTime = (ms: number, includeMs = true): string => {
 };
 
 export default function Timer() {
-  const [location] = useLocation();
   
   // Sound settings
   const [soundEnabled, setSoundEnabled] = useState(() => 

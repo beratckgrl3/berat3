@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/header";
-import { Link, useLocation } from "wouter";
 import { TrendingUp, BarChart3, Target, Brain, BookOpen, Plus, CalendarDays, X, FlaskConical, Trash2, AlertTriangle, Sparkles, Award, Clock, Zap, Edit, Search, Tag, BookX, Lightbulb, Eye } from "lucide-react";
 import { Task, Goal, QuestionLog, InsertQuestionLog, ExamResult, InsertExamResult } from "@shared/schema";
 import { DashboardSummaryCards } from "@/components/dashboard-summary-cards";
@@ -51,7 +50,6 @@ interface PriorityTopic {
 }
 
 export default function Dashboard() {
-  const [location] = useLocation();
   const [showQuestionDialog, setShowQuestionDialog] = useState(false);
   const [editingQuestionLog, setEditingQuestionLog] = useState<QuestionLog | null>(null);
   const [newQuestion, setNewQuestion] = useState({ 
