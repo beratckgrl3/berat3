@@ -140,7 +140,7 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
-      <Header />
+      <Header hideClockOnHomepage={true} />
       
 
       {/* Centered Welcome Section with Clock */}
