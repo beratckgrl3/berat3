@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Atom, Search, Filter, Info } from "lucide-react";
+import { Atom, Search, Filter, Info, Maximize2, Minimize2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface Element {
   number: number;
@@ -54,14 +55,14 @@ const periodicElements: Element[] = [
 ];
 
 const categoryColors = {
-  "alkali-metal": "bg-red-100 dark:bg-red-900 border-red-300 text-red-800 dark:text-red-100",
-  "alkaline-earth-metal": "bg-orange-100 dark:bg-orange-900 border-orange-300 text-orange-800 dark:text-orange-100",
-  "transition-metal": "bg-yellow-100 dark:bg-yellow-900 border-yellow-300 text-yellow-800 dark:text-yellow-100",
-  "post-transition-metal": "bg-green-100 dark:bg-green-900 border-green-300 text-green-800 dark:text-green-100",
-  "metalloid": "bg-blue-100 dark:bg-blue-900 border-blue-300 text-blue-800 dark:text-blue-100",
-  "nonmetal": "bg-purple-100 dark:bg-purple-900 border-purple-300 text-purple-800 dark:text-purple-100",
-  "halogen": "bg-pink-100 dark:bg-pink-900 border-pink-300 text-pink-800 dark:text-pink-100",
-  "noble-gas": "bg-gray-100 dark:bg-gray-800 border-gray-300 text-gray-800 dark:text-gray-100"
+  "alkali-metal": "bg-gradient-to-br from-red-500 to-red-600 border-red-400 text-white shadow-lg shadow-red-500/30",
+  "alkaline-earth-metal": "bg-gradient-to-br from-orange-500 to-orange-600 border-orange-400 text-white shadow-lg shadow-orange-500/30",
+  "transition-metal": "bg-gradient-to-br from-yellow-500 to-yellow-600 border-yellow-400 text-gray-900 shadow-lg shadow-yellow-500/30",
+  "post-transition-metal": "bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-500/30",
+  "metalloid": "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/30",
+  "nonmetal": "bg-gradient-to-br from-purple-500 to-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/30",
+  "halogen": "bg-gradient-to-br from-pink-500 to-pink-600 border-pink-400 text-white shadow-lg shadow-pink-500/30",
+  "noble-gas": "bg-gradient-to-br from-gray-500 to-gray-600 border-gray-400 text-white shadow-lg shadow-gray-500/30"
 };
 
 const categoryNamesTurkish = {
@@ -80,6 +81,8 @@ export default function PeriodicTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [filteredElements, setFilteredElements] = useState(periodicElements);
+  const [isModalMaximized, setIsModalMaximized] = useState(false);
+  const [modalSize, setModalSize] = useState({ width: '800px', height: '600px' });
 
   useEffect(() => {
     let filtered = periodicElements;
@@ -114,12 +117,51 @@ export default function PeriodicTable() {
     return { row, col };
   };
 
+  // Orbital Animation Component
+  const OrbitalAnimation = ({ element }: { element: Element }) => {
+    return (
+      <div className="relative w-48 h-48 mx-auto mb-6">
+        {/* Nucleus */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-lg animate-pulse flex items-center justify-center">
+            <span className="text-white text-xs font-bold">{element.symbol}</span>
+          </div>
+        </div>
+        
+        {/* Orbital 1 */}
+        <div className="absolute inset-0 border border-blue-300/30 rounded-full animate-spin" style={{ animationDuration: '4s' }}>
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="w-2 h-2 bg-red-400 rounded-full shadow-sm"></div>
+          </div>
+        </div>
+        
+        {/* Orbital 2 */}
+        {element.number > 2 && (
+          <div className="absolute inset-2 border border-green-300/30 rounded-full animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }}>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-2 h-2 bg-green-400 rounded-full shadow-sm"></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Orbital 3 */}
+        {element.number > 10 && (
+          <div className="absolute inset-4 border border-purple-300/30 rounded-full animate-spin" style={{ animationDuration: '2.5s' }}>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-2 h-2 bg-purple-400 rounded-full shadow-sm"></div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* Page Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Atom className="h-12 w-12 text-primary mr-4" />
@@ -173,78 +215,91 @@ export default function PeriodicTable() {
 
         {/* Periodic Table Grid */}
         <div className="mb-8">
-          <div className="grid grid-cols-18 gap-1 p-4 bg-card rounded-2xl border shadow-lg max-w-full overflow-x-auto">
-            {Array.from({ length: 7 }, (_, periodIndex) => {
-              const period = periodIndex + 1;
-              const elementsInPeriod = filteredElements.filter(el => el.period === period);
-              
-              return Array.from({ length: 18 }, (_, groupIndex) => {
-                const group = groupIndex + 1;
-                const element = elementsInPeriod.find(el => {
-                  const pos = getElementPosition(el);
-                  return pos.col === group;
-                });
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-lg overflow-x-auto">
+            <div className="grid gap-2 min-w-[1200px]" style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}>
+              {Array.from({ length: 7 }, (_, periodIndex) => {
+                const period = periodIndex + 1;
+                const elementsInPeriod = filteredElements.filter(el => el.period === period);
                 
-                if (!element) {
+                return Array.from({ length: 18 }, (_, groupIndex) => {
+                  const group = groupIndex + 1;
+                  const element = elementsInPeriod.find(el => {
+                    const pos = getElementPosition(el);
+                    return pos.col === group;
+                  });
+                  
+                  if (!element) {
+                    return (
+                      <div
+                        key={`${period}-${group}`}
+                        className="aspect-square min-w-0"
+                      />
+                    );
+                  }
+                  
                   return (
-                    <div
-                      key={`${period}-${group}`}
-                      className="aspect-square min-w-0"
-                    />
+                    <button
+                      type="button"
+                      key={element.number}
+                      onClick={() => setSelectedElement(element)}
+                      className={`
+                        aspect-square min-w-0 p-3 rounded-xl border-2 cursor-pointer
+                        transition-all duration-300 hover:scale-110 hover:z-10 relative
+                        transform-gpu
+                        flex flex-col items-center justify-center text-center
+                        focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-slate-900
+                        ${categoryColors[element.category as keyof typeof categoryColors]}
+                        hover:shadow-2xl hover:border-white/50
+                      `}
+                      data-testid={`element-${element.symbol}`}
+                      aria-label={`Element ${element.symbol} - ${element.nameTurkish}, atom numarası ${element.number}`}
+                    >
+                      <div className="text-xs font-semibold opacity-90 mb-1">
+                        {element.number}
+                      </div>
+                      <div className="text-xl font-bold tracking-tight mb-1">
+                        {element.symbol}
+                      </div>
+                      <div className="text-xs font-medium opacity-90 truncate w-full leading-tight">
+                        {element.nameTurkish}
+                      </div>
+                      <div className="text-xs opacity-75 mt-1">
+                        {element.atomic_mass.toFixed(1)}
+                      </div>
+                    </button>
                   );
-                }
-                
-                return (
-                  <div
-                    key={element.number}
-                    onClick={() => setSelectedElement(element)}
-                    className={`
-                      aspect-square min-w-0 p-1 rounded-lg border-2 cursor-pointer
-                      transition-all duration-200 hover:scale-105 hover:shadow-lg
-                      flex flex-col items-center justify-center text-center
-                      ${categoryColors[element.category as keyof typeof categoryColors]}
-                    `}
-                    data-testid={`element-${element.symbol}`}
-                  >
-                    <div className="text-xs font-medium leading-none mb-1">
-                      {element.number}
-                    </div>
-                    <div className="text-lg font-bold leading-none mb-1">
-                      {element.symbol}
-                    </div>
-                    <div className="text-xs leading-none truncate w-full">
-                      {element.nameTurkish}
-                    </div>
-                  </div>
-                );
-              });
-            })}
+                });
+              })}
+            </div>
           </div>
         </div>
 
         {/* Search Results for Filtered View */}
         {(searchTerm || categoryFilter !== "all") && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">
               Arama Sonuçları ({filteredElements.length} element)
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
               {filteredElements.map(element => (
-                <div
+                <button
+                  type="button"
                   key={element.number}
                   onClick={() => setSelectedElement(element)}
                   className={`
-                    aspect-square p-3 rounded-xl border-2 cursor-pointer
-                    transition-all duration-200 hover:scale-105 hover:shadow-lg
+                    aspect-square p-4 rounded-2xl border-2 cursor-pointer
+                    transition-all duration-300 hover:scale-110 hover:shadow-2xl
                     flex flex-col items-center justify-center text-center
+                    focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-slate-900
                     ${categoryColors[element.category as keyof typeof categoryColors]}
                   `}
                   data-testid={`search-result-${element.symbol}`}
+                  aria-label={`Element ${element.symbol} - ${element.nameTurkish}, atom numarası ${element.number}`}
                 >
-                  <div className="text-sm font-medium mb-1">{element.number}</div>
-                  <div className="text-xl font-bold mb-1">{element.symbol}</div>
-                  <div className="text-xs truncate w-full">{element.nameTurkish}</div>
-                </div>
+                  <div className="text-sm font-semibold opacity-90 mb-1">{element.number}</div>
+                  <div className="text-2xl font-bold mb-1">{element.symbol}</div>
+                  <div className="text-xs font-medium opacity-90 truncate w-full">{element.nameTurkish}</div>
+                </button>
               ))}
             </div>
           </div>
@@ -252,148 +307,178 @@ export default function PeriodicTable() {
 
         {/* Element Detail Modal */}
         <Dialog open={!!selectedElement} onOpenChange={() => setSelectedElement(null)}>
-          <DialogContent className="max-w-2xl max-h-[90vh]">
+          <DialogContent 
+            className={`
+              ${isModalMaximized ? 'max-w-7xl max-h-[95vh]' : 'max-w-5xl max-h-[85vh] resize overflow-auto'} 
+              transition-all duration-300
+            `}
+            style={!isModalMaximized ? { width: '1000px', height: '700px' } : undefined}
+            aria-describedby="element-description"
+          >
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <div className={`
-                  w-16 h-16 rounded-xl border-2 flex flex-col items-center justify-center
-                  ${selectedElement ? categoryColors[selectedElement.category as keyof typeof categoryColors] : ''}
-                `}>
-                  <div className="text-sm font-medium">{selectedElement?.number}</div>
-                  <div className="text-lg font-bold">{selectedElement?.symbol}</div>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold">{selectedElement?.nameTurkish}</h3>
-                  <p className="text-lg text-muted-foreground">{selectedElement?.name}</p>
-                </div>
-              </DialogTitle>
+              <div className="flex items-center justify-between">
+                <DialogTitle className="flex items-center gap-4">
+                  <div className={`
+                    w-20 h-20 rounded-2xl border-2 flex flex-col items-center justify-center shadow-xl
+                    ${selectedElement ? categoryColors[selectedElement.category as keyof typeof categoryColors] : ''}
+                  `}>
+                    <div className="text-sm font-semibold opacity-90">{selectedElement?.number}</div>
+                    <div className="text-2xl font-bold">{selectedElement?.symbol}</div>
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                      {selectedElement?.nameTurkish}
+                    </h3>
+                    <p className="text-xl text-slate-300">{selectedElement?.name}</p>
+                  </div>
+                </DialogTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsModalMaximized(!isModalMaximized)}
+                  className="text-slate-400 hover:text-white hover:bg-slate-700"
+                  data-testid="button-modal-toggle"
+                >
+                  {isModalMaximized ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+                </Button>
+              </div>
             </DialogHeader>
             
-            <ScrollArea className="max-h-[60vh]">
-              <div className="space-y-6 pr-4">
+            <ScrollArea className={`${isModalMaximized ? 'max-h-[75vh]' : 'max-h-[65vh]'}`}>
+              <div className={`space-y-8 pr-4 ${isModalMaximized ? 'grid grid-cols-2 gap-8' : ''}`}>
                 {selectedElement && (
                   <>
-                    {/* Basic Info */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Orbital Animation */}
+                    <div className="flex flex-col items-center">
+                      <OrbitalAnimation element={selectedElement} />
+                      <p id="element-description" className="text-sm text-muted-foreground text-center max-w-sm">
+                        {selectedElement.nameTurkish} elementi - Elektron yörüngeleri ve atom çekirdeği animasyonu
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {/* Basic Info */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-primary">Temel Bilgiler</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground">Atom Numarası:</span>
+                              <span className="font-semibold text-foreground text-lg">{selectedElement.number}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground">Atom Kütlesi:</span>
+                              <span className="font-semibold text-foreground text-lg">{selectedElement.atomic_mass}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground">Periyot:</span>
+                              <span className="font-semibold text-foreground text-lg">{selectedElement.period}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground">Grup:</span>
+                              <span className="font-semibold text-foreground text-lg">{selectedElement.group}</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-primary">Fiziksel Özellikler</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-muted-foreground">Hal:</span>
+                              <span className="font-semibold text-foreground text-lg capitalize">
+                                {selectedElement.phase === 'solid' ? 'Katı' : 
+                                 selectedElement.phase === 'liquid' ? 'Sıvı' : 'Gaz'}
+                              </span>
+                            </div>
+                            {selectedElement.density && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground">Yoğunluk:</span>
+                                <span className="font-semibold text-foreground text-lg">{selectedElement.density} g/cm³</span>
+                              </div>
+                            )}
+                            {selectedElement.melting_point && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground">Erime Noktası:</span>
+                                <span className="font-semibold text-foreground text-lg">{selectedElement.melting_point}°C</span>
+                              </div>
+                            )}
+                            {selectedElement.boiling_point && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground">Kaynama Noktası:</span>
+                                <span className="font-semibold text-foreground text-lg">{selectedElement.boiling_point}°C</span>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Electron Configuration */}
                       <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm">Temel Bilgiler</CardTitle>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-primary">Elektron Dizilimi</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Atom Numarası:</span>
-                            <span className="font-medium">{selectedElement.number}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Atom Kütlesi:</span>
-                            <span className="font-medium">{selectedElement.atomic_mass}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Periyot:</span>
-                            <span className="font-medium">{selectedElement.period}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Grup:</span>
-                            <span className="font-medium">{selectedElement.group}</span>
-                          </div>
+                        <CardContent>
+                          <code className="text-xl font-mono bg-muted text-foreground px-4 py-3 rounded-lg block text-center">
+                            {selectedElement.electron_configuration}
+                          </code>
                         </CardContent>
                       </Card>
 
+                      {/* Category */}
                       <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm">Fiziksel Özellikler</CardTitle>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-primary">Kategori</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Hal:</span>
-                            <span className="font-medium capitalize">
-                              {selectedElement.phase === 'solid' ? 'Katı' : 
-                               selectedElement.phase === 'liquid' ? 'Sıvı' : 'Gaz'}
-                            </span>
-                          </div>
-                          {selectedElement.density && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Yoğunluk:</span>
-                              <span className="font-medium">{selectedElement.density} g/cm³</span>
+                        <CardContent>
+                          <Badge className={`${categoryColors[selectedElement.category as keyof typeof categoryColors]} text-lg px-4 py-2`}>
+                            {categoryNamesTurkish[selectedElement.category as keyof typeof categoryNamesTurkish]}
+                          </Badge>
+                        </CardContent>
+                      </Card>
+
+                      {/* Discovery */}
+                      {selectedElement.discovered_by && (
+                        <Card className="bg-slate-800/50 border-slate-600">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-yellow-400">Keşif</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-slate-300">Keşfeden:</span>
+                              <span className="font-semibold text-white text-right max-w-xs">{selectedElement.discovered_by}</span>
                             </div>
-                          )}
-                          {selectedElement.melting_point && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Erime Noktası:</span>
-                              <span className="font-medium">{selectedElement.melting_point}°C</span>
-                            </div>
-                          )}
-                          {selectedElement.boiling_point && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Kaynama Noktası:</span>
-                              <span className="font-medium">{selectedElement.boiling_point}°C</span>
-                            </div>
-                          )}
+                            {selectedElement.discovery_year && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-slate-300">Keşif Yılı:</span>
+                                <span className="font-semibold text-white text-lg">
+                                  {selectedElement.discovery_year > 0 ? selectedElement.discovery_year : `MÖ ${Math.abs(selectedElement.discovery_year)}`}
+                                </span>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Description */}
+                      <Card className="bg-slate-800/50 border-slate-600 md:col-span-2">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-cyan-400 flex items-center gap-2">
+                            <Info className="h-5 w-5" />
+                            Açıklama
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-slate-200 leading-relaxed text-lg">
+                            {selectedElement.description}
+                          </p>
                         </CardContent>
                       </Card>
                     </div>
-
-                    {/* Electron Configuration */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Elektron Dizilimi</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <code className="text-lg font-mono bg-muted px-3 py-2 rounded">
-                          {selectedElement.electron_configuration}
-                        </code>
-                      </CardContent>
-                    </Card>
-
-                    {/* Category */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Kategori</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <Badge className={categoryColors[selectedElement.category as keyof typeof categoryColors]}>
-                          {categoryNamesTurkish[selectedElement.category as keyof typeof categoryNamesTurkish]}
-                        </Badge>
-                      </CardContent>
-                    </Card>
-
-                    {/* Discovery */}
-                    {selectedElement.discovered_by && (
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm">Keşif</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Keşfeden:</span>
-                            <span className="font-medium">{selectedElement.discovered_by}</span>
-                          </div>
-                          {selectedElement.discovery_year && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Keşif Yılı:</span>
-                              <span className="font-medium">
-                                {selectedElement.discovery_year > 0 ? selectedElement.discovery_year : `MÖ ${Math.abs(selectedElement.discovery_year)}`}
-                              </span>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    )}
-
-                    {/* Description */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Info className="h-4 w-4" />
-                          Açıklama
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {selectedElement.description}
-                        </p>
-                      </CardContent>
-                    </Card>
                   </>
                 )}
               </div>
