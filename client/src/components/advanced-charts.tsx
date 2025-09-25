@@ -65,9 +65,11 @@ function AdvancedChartsComponent() {
       if (log.wrong_topics && log.wrong_topics.length > 0) {
         log.wrong_topics.forEach(topicItem => {
           // Handle both string[] and object[] formats
-          const topic = typeof topicItem === 'string' ? topicItem : topicItem.topic;
+          const topic = typeof topicItem === 'string' ? topicItem : (topicItem as any)?.topic;
           if (topic) {
-            const key = `${log.subject}-${topic}`;
+            // Include exam_type in subject name for proper TYT/AYT display
+            const subjectWithExamType = `${log.exam_type} ${log.subject}`;
+            const key = `${subjectWithExamType}-${topic}`;
             if (topicMap.has(key)) {
               const existing = topicMap.get(key)!;
               existing.frequency += 1;
@@ -75,12 +77,12 @@ function AdvancedChartsComponent() {
             } else {
               topicMap.set(key, {
                 topic,
-                subject: log.subject,
+                subject: subjectWithExamType,
                 source: 'question',
                 frequency: 1,
                 lastSeen: log.study_date,
-                difficulty: typeof topicItem === 'object' ? topicItem.difficulty : undefined,
-                category: typeof topicItem === 'object' ? topicItem.category : undefined
+                difficulty: typeof topicItem === 'object' ? (topicItem as any)?.difficulty : undefined,
+                category: typeof topicItem === 'object' ? (topicItem as any)?.category : undefined
               });
             }
           }
@@ -105,9 +107,12 @@ function AdvancedChartsComponent() {
                 'biyoloji': 'Biyoloji'
               };
               const subjectName = subjectNameMap[subjectKey] || subjectKey;
+              // Include exam_type in subject name for proper TYT/AYT display
+              const examType = exam.exam_type || 'TYT';
+              const subjectWithExamType = `${examType} ${subjectName}`;
               
               data.wrong_topics.forEach((topic: string) => {
-                const key = `${subjectName}-${topic}`;
+                const key = `${subjectWithExamType}-${topic}`;
                 if (topicMap.has(key)) {
                   const existing = topicMap.get(key)!;
                   existing.frequency += 1;
@@ -115,7 +120,7 @@ function AdvancedChartsComponent() {
                 } else {
                   topicMap.set(key, {
                     topic,
-                    subject: subjectName,
+                    subject: subjectWithExamType,
                     source: 'exam',
                     frequency: 1,
                     lastSeen: exam.exam_date
