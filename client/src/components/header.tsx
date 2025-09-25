@@ -3,6 +3,7 @@ import { useTheme } from "./theme-provider";
 import { useState, useEffect } from "react";
 import { EmojiPicker } from "./emoji-picker";
 import { MotivationalQuote } from "./motivational-quote";
+import { Link, useLocation } from "wouter";
 
 interface HeaderProps {
   // No longer need onProfileClick since we handle emoji picker internally
@@ -10,6 +11,7 @@ interface HeaderProps {
 
 export function Header({}: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const [location] = useLocation();
   const [showTooltip, setShowTooltip] = useState(false);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('😊');
@@ -175,10 +177,70 @@ export function Header({}: HeaderProps) {
         </div>
       </div>
       
-      {/* Navigation Section - TO BE ADDED LATER */}
+      {/* Navigation Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-16">
-          {/* Navigation buttons will be moved here later */}
+          <div className="flex items-center space-x-6">
+            <Link href="/">
+              <button 
+                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                  location === '/' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+                data-testid="link-homepage"
+              >
+                Anasayfa
+              </button>
+            </Link>
+            <Link href="/tasks">
+              <button 
+                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                  location === '/tasks' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+                data-testid="link-todos"
+              >
+                Yapılacaklar
+              </button>
+            </Link>
+            <Link href="/dashboard">
+              <button 
+                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                  location === '/dashboard' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+                data-testid="link-dashboard"
+              >
+                Raporlarım
+              </button>
+            </Link>
+            <Link href="/net-calculator">
+              <button 
+                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                  location === '/net-calculator' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+              >
+                Net Hesapla
+              </button>
+            </Link>
+            <Link href="/timer">
+              <button 
+                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                  location === '/timer' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+                data-testid="link-timer"
+              >
+                Sayaç
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
       
