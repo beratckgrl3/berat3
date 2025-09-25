@@ -1,4 +1,4 @@
-import { Sun, Moon, Clock } from "lucide-react";
+import { Sun, Moon, Clock, Home, CheckSquare, BarChart3, Activity, Calculator, Timer } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { useState, useEffect } from "react";
 import { EmojiPicker } from "./emoji-picker";
@@ -134,26 +134,12 @@ export function Header({ hideClockOnHomepage = false, onReportCounterClick }: He
                 </div>
               </div>
               
-              {/* Far Right - Theme and Profile */}
-              <div className="flex items-center space-x-4 pr-4">
-                {/* Theme Toggle */}
-                <button 
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors duration-200"
-                  title="Tema Değiştir"
-                  data-testid="button-theme-toggle"
-                >
-                  {theme === "light" ? (
-                    <Sun className="h-4 w-4 text-secondary-foreground" />
-                  ) : (
-                    <Moon className="h-4 w-4 text-secondary-foreground" />
-                  )}
-                </button>
-
-                {/* Profile Section */}
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm text-muted-foreground hidden sm:block">Hoşgeldiniz</span>
-                  <span className="font-medium text-foreground hidden sm:block">Berat Çakıroğlu</span>
+              {/* Far Right - Theme and Profile - Compact */}
+              <div className="flex items-center space-x-2 pr-3">
+                {/* Profile Section - More Compact */}
+                <div className="flex items-center space-x-1">
+                  <span className="text-xs text-muted-foreground hidden sm:block">Hoşgeldiniz</span>
+                  <span className="font-medium text-sm text-foreground hidden sm:block">Berat Çakıroğlu</span>
                   <div className="relative">
                     <button
                       onClick={() => setEmojiPickerOpen(true)}
@@ -212,26 +198,12 @@ export function Header({ hideClockOnHomepage = false, onReportCounterClick }: He
                 <MotivationalQuote />
               </div>
               
-              {/* Right Side - Theme, Welcome - TAMAMEN sağa yapıştır */}
-              <div className="flex items-center space-x-2">
-                {/* Theme Toggle */}
-                <button 
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-secondary hover:bg-accent transition-colors duration-200"
-                  title="Tema Değiştir"
-                  data-testid="button-theme-toggle"
-                >
-                  {theme === "light" ? (
-                    <Sun className="h-4 w-4 text-secondary-foreground" />
-                  ) : (
-                    <Moon className="h-4 w-4 text-secondary-foreground" />
-                  )}
-                </button>
-
-                {/* Profile Section */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground hidden sm:block">Hoşgeldiniz</span>
-                  <span className="font-medium text-foreground hidden sm:block">Berat Çakıroğlu</span>
+              {/* Right Side - Compact Profile and Theme */}
+              <div className="flex items-center space-x-1 pr-2">
+                {/* Profile Section - Compact */}
+                <div className="flex items-center space-x-1">
+                  <span className="text-xs text-muted-foreground hidden sm:block">Hoşgeldiniz</span>
+                  <span className="font-medium text-sm text-foreground hidden sm:block">Berat Çakıroğlu</span>
                   <div className="relative">
                     <button
                       onClick={() => setEmojiPickerOpen(true)}
@@ -283,61 +255,79 @@ export function Header({ hideClockOnHomepage = false, onReportCounterClick }: He
           <div className="flex items-center space-x-6">
             <Link href="/">
               <button 
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                   location === '/' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
                 }`}
                 data-testid="link-homepage"
               >
-                Anasayfa
+                <Home className="h-5 w-5" />
+                <span>Anasayfa</span>
               </button>
             </Link>
             <Link href="/tasks">
               <button 
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                   location === '/tasks' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
                 }`}
                 data-testid="link-todos"
               >
-                Yapılacaklar
+                <CheckSquare className="h-5 w-5" />
+                <span>Yapılacaklar</span>
               </button>
             </Link>
             <Link href="/dashboard">
               <button 
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                   location === '/dashboard' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
                 }`}
                 data-testid="link-dashboard"
               >
-                Raporlarım
+                <BarChart3 className="h-5 w-5" />
+                <span>Raporlarım</span>
+              </button>
+            </Link>
+            <Link href="/activities">
+              <button 
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
+                  location === '/activities' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+                }`}
+                data-testid="link-activities"
+              >
+                <Activity className="h-5 w-5" />
+                <span>Aktivitelerim</span>
               </button>
             </Link>
             <Link href="/net-calculator">
               <button 
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                   location === '/net-calculator' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
                 }`}
               >
-                Net Hesapla
+                <Calculator className="h-5 w-5" />
+                <span>Net Hesapla</span>
               </button>
             </Link>
             <Link href="/timer">
               <button 
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-2 ${
                   location === '/timer' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
                 }`}
                 data-testid="link-timer"
               >
-                Sayaç
+                <Timer className="h-5 w-5" />
+                <span>Sayaç</span>
               </button>
             </Link>
           </div>
