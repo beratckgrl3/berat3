@@ -78,29 +78,29 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
           <div className="flex justify-between items-center py-2">
             {/* Compact Clock and Date Display - Completely Left-Aligned */}
-            <div className="flex items-start space-x-2 pl-2">
-                {/* Clock Icon - Smaller */}
+            <div className="flex items-start space-x-3 pl-3">
+                {/* Clock Icon - Bigger */}
                 <div className="relative">
-                  <div className="relative w-6 h-6 bg-black/10 dark:bg-purple-950/20 backdrop-blur-xl border border-purple-500/20 dark:border-purple-400/20 rounded-lg flex items-center justify-center shadow-md">
-                    <Clock className="h-3 w-3 text-purple-600 dark:text-purple-400 drop-shadow-lg" />
+                  <div className="relative w-8 h-8 bg-black/10 dark:bg-purple-950/20 backdrop-blur-xl border border-purple-500/20 dark:border-purple-400/20 rounded-lg flex items-center justify-center shadow-md">
+                    <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400 drop-shadow-lg" />
                   </div>
                 </div>
                 
-                {/* Time and Date Layout - Vertical for smaller display */}
+                {/* Time and Date Layout - Vertical, bigger display */}
                 <div className="flex flex-col space-y-1">
-                  {/* Time Display - Smaller */}
-                  <div className="text-sm font-bold bg-gradient-to-r from-purple-600 via-violet-700 to-black dark:from-purple-400 dark:via-violet-500 dark:to-gray-300 bg-clip-text text-transparent font-mono" data-testid="text-time-header">
+                  {/* Time Display - Bigger */}
+                  <div className="text-base font-bold bg-gradient-to-r from-purple-600 via-violet-700 to-black dark:from-purple-400 dark:via-violet-500 dark:to-gray-300 bg-clip-text text-transparent font-mono" data-testid="text-time-header">
                     {formatDateTime().timeStr}
                   </div>
                   
-                  {/* Date and Location - Horizontal layout, smaller text */}
-                  <div className="flex items-center space-x-2 text-xs">
+                  {/* Date and Location - Horizontal layout, bigger text */}
+                  <div className="flex items-center space-x-2 text-sm">
                     <span className="bg-gradient-to-r from-purple-800 to-black dark:from-purple-300 dark:to-gray-200 bg-clip-text text-transparent font-medium" data-testid="text-date-header">
                       {formatDateTime().dateStr}
                     </span>
                     <span className="text-muted-foreground/50">•</span>
                     <div className="flex items-center space-x-1 text-muted-foreground">
-                      <span className="text-xs">📍</span>
+                      <span className="text-sm">📍</span>
                       <span className="font-medium bg-gradient-to-r from-purple-600 to-violet-700 dark:from-purple-400 dark:to-violet-500 bg-clip-text text-transparent">
                         Sakarya, Serdivan
                       </span>
@@ -194,8 +194,8 @@ export function Header({ hideClockOnHomepage = false }: HeaderProps) {
                 <MotivationalQuote />
               </div>
               
-              {/* Right Side - Theme, Welcome */}
-              <div className="flex items-center space-x-6">
+              {/* Right Side - Theme, Welcome - Compact and right-aligned */}
+              <div className="flex items-center space-x-3 ml-auto">
                 {/* Theme Toggle */}
                 <button 
                   onClick={toggleTheme}
