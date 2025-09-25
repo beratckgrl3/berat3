@@ -78,17 +78,38 @@ export function Header({}: HeaderProps) {
       {/* Main Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Time and Date Display */}
-          <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
-              <Clock className="h-5 w-5 text-primary-foreground" />
+          {/* Modern Time and Date Display */}
+          <div className="flex items-center space-x-4 relative">
+            {/* Enhanced Clock Icon with Glassmorphism */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-indigo-500/30 rounded-2xl blur-lg animate-pulse"></div>
+              <div className="relative w-12 h-12 bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Clock className="h-6 w-6 text-primary drop-shadow-lg" />
+              </div>
             </div>
-            <div className="flex flex-col">
-              <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
+            
+            {/* Enhanced Time and Date Container */}
+            <div className="flex flex-col relative">
+              {/* Modern Time Display with Gradient */}
+              <div className="text-4xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent font-mono tracking-tighter drop-shadow-lg" data-testid="text-time">
                 {formatDateTime().timeStr}
               </div>
-              <div className="text-sm text-muted-foreground font-medium">
-                {formatDateTime().dateStr} - Sakarya, Serdivan
+              
+              {/* Stylized Date and Location */}
+              <div className="flex items-center space-x-2 text-sm font-semibold mt-1">
+                <div className="flex items-center space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg animate-pulse"></div>
+                  <span className="bg-gradient-to-r from-slate-700 to-gray-600 dark:from-slate-300 dark:to-gray-300 bg-clip-text text-transparent font-bold" data-testid="text-date">
+                    {formatDateTime().dateStr}
+                  </span>
+                </div>
+                <span className="text-muted-foreground/50">•</span>
+                <div className="flex items-center space-x-1 text-muted-foreground">
+                  <span className="text-xs">📍</span>
+                  <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                    Sakarya, Serdivan
+                  </span>
+                </div>
               </div>
             </div>
           </div>

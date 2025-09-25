@@ -2527,6 +2527,7 @@ export default function Dashboard() {
                   createExamResultMutation.mutate({
                     exam_name: newExamResult.exam_name,
                     exam_date: newExamResult.exam_date,
+                    exam_type: newExamResult.exam_type, // CRITICAL FIX: Include exam_type for proper TYT/AYT separation
                     tyt_net: newExamResult.exam_type === "TYT" ? totalNet.toString() : "0",
                     ayt_net: newExamResult.exam_type === "AYT" ? totalNet.toString() : "0",
                     subjects_data: JSON.stringify(newExamResult.subjects)
