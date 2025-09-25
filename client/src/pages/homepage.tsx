@@ -4,7 +4,6 @@ import { Header } from "@/components/header";
 import { EnhancedWeatherWidget } from "@/components/enhanced-weather-widget";
 import { CountdownWidget } from "@/components/countdown-widget";
 import { TodaysTasksWidget } from "@/components/todays-tasks-widget";
-import { FlashcardsWidget } from "@/components/flashcards-widget";
 import { Calendar, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Task } from "@shared/schema";
@@ -123,6 +122,18 @@ export default function Homepage() {
               Sayaç
             </button>
           </Link>
+          <Link href="/periodic-table">
+            <button 
+              className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                location === '/periodic-table' 
+                  ? 'bg-primary text-primary-foreground shadow-lg' 
+                  : 'bg-secondary text-secondary-foreground hover:bg-accent hover:scale-105'
+              }`}
+              data-testid="link-periodic-table"
+            >
+              Periyodik Cetvel
+            </button>
+          </Link>
         </div>
       </nav>
 
@@ -234,14 +245,9 @@ export default function Homepage() {
             )}
           </div>
 
-          {/* Today's Tasks and Flashcards Column - Takes 2 columns */}
-          <div className="lg:col-span-2 flex h-full flex-col gap-0">
-            <div className="flex-grow min-h-0">
-              <TodaysTasksWidget />
-            </div>
-            <div className="flex-shrink-0">
-              <FlashcardsWidget />
-            </div>
+          {/* Today's Tasks Column - Takes 2 columns */}
+          <div className="lg:col-span-2 h-full">
+            <TodaysTasksWidget />
           </div>
         </div>
 

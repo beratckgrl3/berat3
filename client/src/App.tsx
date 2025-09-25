@@ -9,6 +9,7 @@ import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import NetCalculator from "@/pages/net-calculator";
 import Timer from "@/pages/timer";
+import PeriodicTable from "@/pages/periodic-table";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/net-calculator" component={NetCalculator} />
       <Route path="/timer" component={Timer} />
+      <Route path="/periodic-table" component={PeriodicTable} />
       <Route component={NotFound} />
     </Switch>
   );
