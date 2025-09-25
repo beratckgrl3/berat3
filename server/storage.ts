@@ -345,12 +345,17 @@ export class MemStorage implements IStorage {
 
   async createQuestionLog(insertLog: InsertQuestionLog): Promise<QuestionLog> {
     const id = randomUUID();
+    
+    // Normalize wrong_topics to remove subject prefixes
+    const normalizedWrongTopics = insertLog.wrong_topics ? 
+      insertLog.wrong_topics.map(topic => this.normalizeTopic(topic)) : [];
+    
     const log: QuestionLog = {
       ...insertLog,
       id,
       topic: insertLog.topic ?? null,
       blank_count: insertLog.blank_count ?? "0",
-      wrong_topics: insertLog.wrong_topics ?? [],
+      wrong_topics: normalizedWrongTopics,
       wrong_topics_json: insertLog.wrong_topics_json ?? null,
       time_spent_minutes: insertLog.time_spent_minutes ?? null,
       createdAt: new Date(),
@@ -516,6 +521,12 @@ export class MemStorage implements IStorage {
     return updatedFlashcard;
   }
   
+  // Normalize topic names by removing TYT/AYT subject prefixes
+  private normalizeTopic(topic: string): string {
+    // Remove patterns like "TYT Türkçe - " or "AYT Fizik - " from topic names
+    return topic.replace(/^(TYT|AYT)\s+[^-]+\s+-\s+/, '').trim();
+  }
+
   // Topic statistics operations (specific wrong topics mentioned by users)
   async getTopicStats(): Promise<Array<{ topic: string; wrongMentions: number; totalSessions: number; mentionFrequency: number }>> {
     const logs = Array.from(this.questionLogs.values());
@@ -527,10 +538,11 @@ export class MemStorage implements IStorage {
       // Only track specifically mentioned wrong topics, not general subjects
       if (log.wrong_topics && log.wrong_topics.length > 0) {
         log.wrong_topics.forEach(topic => {
-          if (!topicStats.has(topic)) {
-            topicStats.set(topic, { wrongMentions: 0, sessionsAppeared: new Set() });
+          const normalizedTopic = this.normalizeTopic(topic);
+          if (!topicStats.has(normalizedTopic)) {
+            topicStats.set(normalizedTopic, { wrongMentions: 0, sessionsAppeared: new Set() });
           }
-          const topicStat = topicStats.get(topic)!;
+          const topicStat = topicStats.get(normalizedTopic)!;
           topicStat.wrongMentions += 1; // Count how many times this topic was mentioned as wrong
           topicStat.sessionsAppeared.add(log.id); // Track unique sessions where this topic appeared
         });
@@ -546,10 +558,11 @@ export class MemStorage implements IStorage {
             if (subjectData.wrong_topics && Array.isArray(subjectData.wrong_topics)) {
               subjectData.wrong_topics.forEach((topic: string) => {
                 if (topic && topic.trim().length > 0) {
-                  if (!topicStats.has(topic)) {
-                    topicStats.set(topic, { wrongMentions: 0, sessionsAppeared: new Set() });
+                  const normalizedTopic = this.normalizeTopic(topic);
+                  if (!topicStats.has(normalizedTopic)) {
+                    topicStats.set(normalizedTopic, { wrongMentions: 0, sessionsAppeared: new Set() });
                   }
-                  const topicStat = topicStats.get(topic)!;
+                  const topicStat = topicStats.get(normalizedTopic)!;
                   topicStat.wrongMentions += 2; // Weight exam errors higher (2x)
                   topicStat.sessionsAppeared.add(`exam_${exam.id}`);
                 }

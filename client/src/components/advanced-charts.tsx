@@ -46,6 +46,12 @@ function AdvancedChartsComponent() {
   const [removedErrorTopics, setRemovedErrorTopics] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
+  // Normalize topic names by removing TYT/AYT subject prefixes
+  const normalizeTopic = (topic: string): string => {
+    // Remove patterns like "TYT Türkçe - " or "AYT Fizik - " from topic names
+    return topic.replace(/^(TYT|AYT)\s+[^-]+\s*-\s*/, '').trim();
+  };
+
   const { data: examResults = [], isLoading: isLoadingExams } = useQuery<ExamResult[]>({
     queryKey: ["/api/exam-results"],
   });
@@ -65,8 +71,10 @@ function AdvancedChartsComponent() {
       if (log.wrong_topics && log.wrong_topics.length > 0) {
         log.wrong_topics.forEach(topicItem => {
           // Handle both string[] and object[] formats
-          const topic = typeof topicItem === 'string' ? topicItem : (topicItem as any)?.topic;
-          if (topic) {
+          const rawTopic = typeof topicItem === 'string' ? topicItem : (topicItem as any)?.topic;
+          if (rawTopic) {
+            // Normalize topic to remove any subject prefixes
+            const topic = normalizeTopic(rawTopic);
             // Include exam_type in subject name for proper TYT/AYT display
             const subjectWithExamType = `${log.exam_type} ${log.subject}`;
             const key = `${subjectWithExamType}-${topic}`;
@@ -111,7 +119,9 @@ function AdvancedChartsComponent() {
               const examType = exam.exam_type || 'TYT';
               const subjectWithExamType = `${examType} ${subjectName}`;
               
-              data.wrong_topics.forEach((topic: string) => {
+              data.wrong_topics.forEach((rawTopic: string) => {
+                // Normalize topic to remove any subject prefixes
+                const topic = normalizeTopic(rawTopic);
                 const key = `${subjectWithExamType}-${topic}`;
                 if (topicMap.has(key)) {
                   const existing = topicMap.get(key)!;
@@ -416,9 +426,9 @@ function AdvancedChartsComponent() {
                 if (structuredTopics.length > 0) {
                   structuredTopics.forEach(topicItem => {
                     allWrongTopicData.push({
-                      topic: topicItem.topic,
+                      topic: normalizeTopic(topicItem.topic),
                       source: 'question',
-                      subject: log.subject,
+                      subject: log.subject, // Keep subject name without prefix here  
                       exam_type: log.exam_type,
                       wrong_count: parseInt(log.wrong_count) || 0,
                       study_date: log.study_date,
@@ -429,12 +439,12 @@ function AdvancedChartsComponent() {
                 } else {
                   // Fall back to simple wrong_topics array
                   log.wrong_topics.forEach(topic => {
-                    const topicName = typeof topic === 'string' ? topic : topic.topic || '';
+                    const topicName = typeof topic === 'string' ? topic : (topic as any)?.topic || '';
                     if (topicName) {
                       allWrongTopicData.push({
-                        topic: topicName,
+                        topic: normalizeTopic(topicName),
                         source: 'question',
-                        subject: log.subject,
+                        subject: log.subject, // Keep subject name without prefix here
                         exam_type: log.exam_type,
                         wrong_count: parseInt(log.wrong_count) || 0,
                         study_date: log.study_date
@@ -465,9 +475,9 @@ function AdvancedChartsComponent() {
                       
                       data.wrong_topics.forEach((topic: string) => {
                         allWrongTopicData.push({
-                          topic: topic,
+                          topic: normalizeTopic(topic),
                           source: 'exam',
-                          subject: subjectName,
+                          subject: subjectName, // Keep subject name without prefix here
                           exam_type: exam.exam_type || 'TYT',
                           wrong_count: parseInt(data.wrong) || 0,
                           study_date: exam.exam_date
