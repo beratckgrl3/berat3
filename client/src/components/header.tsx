@@ -202,7 +202,7 @@ export function Header({ hideClockOnHomepage = false, onReportCounterClick }: He
       {/* Motivational Quote for Homepage - When clock is hidden */}
       {!shouldShowClock && (
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
-          <div className="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-2 py-3">
+          <div className="max-w-7xl mx-auto pl-4 sm:pl-6 lg:pl-8 pr-0 py-3">
             <div className="flex justify-between items-center">
               {/* Empty left space */}
               <div></div>
